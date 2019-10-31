@@ -1,0 +1,36 @@
+// @import "~ag-grid-community/dist/styles/ag-grid.css";
+// @import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+
+@import "../node_modules/ag-grid-community/src/styles/ag-grid.scss";
+@import "../node_modules/ag-grid-community/src/styles/ag-theme-balham/sass/ag-theme-balham.scss";
+
+$odd-row-background-color: rgb(238, 20, 68);
+
+body{
+  width: 98vw;
+  height: 100vh;
+  // max-width: 1000px;
+  // margin: 1.6em auto;
+  // display: grid;
+  // gap: 1.6em;
+  // grid-template-columns: 1fr;
+}
+
+
+// Sobreescribe lo definido en  /node_modules\ag-grid-community\src\styles\ag-grid.scss :365
+.ag-header-cell-label .ag-header-cell-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: green;
+    font-family: Arial;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+
+// Cambia la altura del combo de busqueda.
+#richList{
+  height: 800px !Important;
+}

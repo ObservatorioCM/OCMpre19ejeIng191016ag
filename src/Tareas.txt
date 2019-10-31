@@ -1,0 +1,2 @@
+Los cambios en css solo consigo que funcionen haciendolos directamente en lineas 345 y siguientes de:
+C:\Users\pc\Google Drive\Angular\ag-Grid\node_modules\ag-grid-community\src\styles\ag-grid.scss

@@ -1,0 +1,85 @@
+Crear carpeta con la fecha.
+Bajar ficheros del PdT.
+Copiar y  renombrar Excel publicado terminando en OCM.
+Eliminar 2ª fila de cabecera, la que asigna letras a las columnas (a), (b) c=a+b ............
+Eliminar fila totales.
+Añadir columna "Capitulo". (no usar acento)
+Extraer primer caracter de "Economico" en esta columna. =IZQUIERDA(D2;1)
+Cambiar a tipo numero, 0 decimales, sin separador de miles, las columnas:
+    Eco.
+    Capitulo.
+Cambiar nombres que contengan un . de lo contrario no se muestran los valores en ag-grid.
+Grabar.
+Cerrar
+
+Abrir Tableau
+Crear nuevo libro con el Excel renombrado anteriormente.
+Grabarlo con el mismo nombre.
+
+Cambiar en la cabecera de Tableau de tipo ABC a numero entero las 2 columnas anteriores.
+Preparar consulta en Tableau para unir el Excel del Ayuntamiento con las tablas.
+C:\Users\pc\Google Drive\Ayuntamiento\Presupuestos\Tablas
+Cada una esta nombrada como Tabla Programas 2019 para poder ir recogiendo los posibles cambios.
+Al añadir tablas se situa a la derecha, tratandose de unirse a una tabla accesoria en lugar de a la consulta.
+Solución:
+    Duplicar la tabla que se ha situado a la derecha, se creara otra en el lugar correcto.
+    Borrar la tabla derecha.
+    Restablecer nombre de la tabla (Pulsar sobre la fecha para desplegar menu). Sigue conservando el nombre anterior entre parentesis.
+
+
+Unión interior.
+   Capitulos. Capitulo => Cod Cap
+
+Estando en la pestaña Fuente de datos:
+     En el menu principal:
+        Datos.
+        Exportar datos a CSV...
+        Guardar como 20190902ejeIng
+
+Tambien exporta los campos calculados.
+Al exportar de Tableau a CSV hay cantidades que lo hace con decimales y otras no.
+En el CSV generado revisar todas las columnas numericas.
+    Las pongo como numero, decimales=0, sin separador de miles.
+    Los porcentajes = porcentaje, dos decimales.
+
+Borrar los campos repetidos,
+    Capitulo
+    Eco.
+    Org.
+    Pro.
+ se dejan los enlazados de las tablas.
+Deben quedar sin espacio, ni nada entre parentesis al final.:
+"DesCap": "Inversiones reales",
+    DesCap
+    CodEco
+    CodOrg
+    CodPro
+    DesEco
+    DesOrg
+
+
+ Guardar.
+ Cerrar
+
+
+https://www.csvjson.com/csv2json
+Options: Parse numbers y array.
+Select a file. Selecionar el csv preparado.
+Pulsar >convert.
+Comnprobar que los cambios numerico no tienen comillas.
+Download.
+Si esta abierto VS Code lo abre en el.
+Comprobar que los campos númericos estan bien formateados.
+Comprobar que no quedan puntos en los nombres de columnas.
+Lo genera con el nombre csvjson.json
+Guardar como desde VS Code.
+Le cambio el nombre a aaaammddeje.json
+Lo hago público en Digital Ocean.
+https://cloud.digitalocean.com/login
+   Sign with Google. Spaces
+Copia la URL.
+La pongo en el codigo. app.componet.tx line 414
+
+Comprobar que coinciden los totales con la hoja original, usando: Estado Ejecución Gastos por aplicaciones COMPARATIVA CON AG-GRID.xls
+
+
