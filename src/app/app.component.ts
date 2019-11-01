@@ -19,7 +19,6 @@ import localeTextESPes from '../assets/localeTextESPes.json';
 
 export class AppComponent implements OnInit {
   @ViewChild('agGrid', { static: false }) agGrid: AgGridAngular;
-  // title = 'app';
   private gridApi;
   private gridColumnApi;
 
@@ -36,19 +35,29 @@ export class AppComponent implements OnInit {
   public autoGroupColumnDef;
 
   public groupHeaderHeight = 25;
-  public headerHeight = 75;
+  public headerHeight = 86;
   private HeaderNumericWidth = 100;
   public isExpanded = false;
 
   constructor(private http: HttpClient) {
     this.columnDefs = [
-      {headerName: 'Programa-Capítulo-Económico.',
+      {headerName: 'Capítulo-Económico.',
         children: [
+          // Se define el campo por el que se agrupará.
+            {
+            headerName: 'Capítulo',
+            field: 'DesCap',
+            rowGroup: true,
+            hide: true,
+            pinned: 'left'
+          },
+
           {
-            headerName: 'Programa',
-            width: 500,
+            headerName: 'Capítulo',
+            width: 220,
             pinned: 'left',
-            showRowGroup: 'DesPro',
+            // field: 'Capítulo',
+            showRowGroup: 'DesCap',
             cellRenderer: 'agGroupCellRenderer',
             filter: false,
             cellRendererParams: {
@@ -65,70 +74,66 @@ export class AppComponent implements OnInit {
               }
             }
           },
-          // Si no tengo esta parte separada no funciona bien, repite Programa con cada Económico.
-          {
-            field: 'DesPro',
-            rowGroup: true,
-            hide: true,
-            pinned: 'left'
-          },
-          {
-            headerName: '',
-            field: 'Capitulo',
-            width: 10,
-            hide: true,
-            pinned: 'left',
-            filter: false
-          },
-          {
-            headerName: 'Capítulo',
-            field: 'DesCap',
-            width: 300,
-            rowGroup: true,
-            filter: false,
-            pinned: 'left',
-            showRowGroup: 'DesCap',
-            cellRenderer: 'agGroupCellRenderer',
-            valueGetter: params => {
-              if (params.data) {
-                return params.data.Capitulo + ' - ' + params.data.DesCap;
-              } else {
-                return null;
-              }
-            },
-            cellRendererParams: {
-              suppressCount: true,
-              innerRenderer: params => {
-                // console.log('params', params);
-                if (params.node.group) {
-                  return params.value;
-                } else {
-                  return '';
-                }
-              },
-              footerValueGetter(params) {
-                const val = params.value.split(' - ')[1];
-                switch (params.node.level) {
-                  case 1:  // Total capítulo.
-                    return '<span style="color: red; font-size: 12px;  font-weight: bold; margin-left: 0px;"> Total ' + val + '</span>';
-                  case -1: // Total general.
-                    return '';
-                  default:
-                    return 'SIN FORMATO';
-                }
-              }
-            }
-          },
+
+          // {
+          //   headerName: '',
+          //   field: 'DesCap',
+          //   width: 100,
+          //   hide: false,
+          //   pinned: 'left',
+          //   filter: false
+          // },
+          // {
+          //   headerName: 'Capítulo',
+          //   field: 'DesCap',
+          //   width: 300,
+          //   rowGroup: true,
+          //   filter: false,
+          //   pinned: 'left',
+          //   showRowGroup: 'DesCap',
+          //   cellRenderer: 'agGroupCellRenderer',
+          //   valueGetter: params => {
+          //     if (params.data) {
+          //       return params.data.Capítulo + ' - ' + params.data.DesCap;
+          //     } else {
+          //       return null;
+          //     }
+          //   },
+          //   cellRendererParams: {
+          //     suppressCount: true,
+          //     innerRenderer: params => {
+          //       // console.log('params', params);
+          //       if (params.node.group) {
+          //         return params.value;
+          //       } else {
+          //         return '';
+          //       }
+          //     },
+          //     footerValueGetter(params) {
+          //       const val = params.value.split(' - ')[1];
+          //       switch (params.node.level) {
+          //         case 1:  // Total capítulo.
+          //           return '<span style="color: red; font-size: 12px;  font-weight: bold; margin-left: 0px;"> Total ' + val + '</span>';
+          //         case -1: // Total general.
+          //           return '';
+          //         default:
+          //           return 'SIN FORMATO';
+          //       }
+          //     }
+          //   }
+          // },
+
+          // Codigo y descripción económico.
           {
             headerName: '',
-            field: 'CodEco',
+            field: 'Eco',
             width: 57,
             pinned: 'left',
             filter: false,
           },
           {
             headerName: 'Económico',
-            field: 'DesEco',
+            field: 'Descripción',
             cellClass: 'resaltado',
             width: 400,
             pinned: 'left',
@@ -137,25 +142,22 @@ export class AppComponent implements OnInit {
         ]
       },
 
-      {headerName: 'Créditos',
-        headerGroupComponentFramework: HeaderGroupComponent,
-        children: [
-          {
+      // Columnas con datos númericos.
+            {
             // para separar el headerName en 3 lineas debe contener DOS comas.
-            headerName: 'Iniciales,,',
+            headerName: '    Previsiones,iniciales,',
             headerComponentFramework: HeaderComponent,
-            field: 'Créditos Iniciales',
+            field: 'Previsiones Iniciales',
             width: this.HeaderNumericWidth,
             filter: false,
             columnGroupShow: 'open',
             aggFunc: 'sum',
             cellRenderer: CellRendererOCM
-            ,
           },
           {
-            headerName: 'Modificación,,',
+            headerName: '    Total,modificaciones,',
             headerComponentFramework: HeaderComponent,
-            field: 'Modificaciones de Crédito',
+            field: 'Total Modificaciones',
             aggFunc: 'sum',
             cellRenderer: CellRendererOCM
             ,
@@ -169,199 +171,76 @@ export class AppComponent implements OnInit {
             }
           },
           {
-            headerName: 'Creditos,totales,consignados',
+            headerName: '    Previsiones,totales,',
             headerComponentFramework: HeaderComponent,
-            field: 'Créditos Totales consignados',
+            field: 'Previsiones totales',
             width: this.HeaderNumericWidth,
             filter: false,
             columnGroupShow: 'Closed', // Se muestra por defecto.
             aggFunc: 'sum',
             cellRenderer: CellRendererOCM
-            ,
           },
-        ]
-      },
-
-      {headerName: 'Gastos',
-        headerGroupComponentFramework: HeaderGroupComponent,
-        children: [
           {
-            headerName: 'Obligaciones,reconocidas,',
+            headerName: '    Derechos,reconocidos,netos',
             headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Obligaciones Reconocidas',
+            field: 'Derechos Reconocidos Netos',
             width: this.HeaderNumericWidth,
             filter: false,
+            columnGroupShow: 'Closed', // Se muestra por defecto.
             aggFunc: 'sum',
             cellRenderer: CellRendererOCM
-            ,
           },
           {
-            headerName: 'Comprometidos,,',
+            headerName: '    Derechos,recaudados,',
             headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Gastos Comprometidos',
-            width: this.HeaderNumericWidth + 5, // + espacio para que se alinee arriba.
-            filter: false,
-            columnGroupShow: 'open',
-            aggFunc: 'sum',
-            cellRenderer: CellRendererOCM
-            ,
-          },
-          {
-            headerName: 'Autorizados,,',
-            headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Gastos Autorizados',
+            field: 'Derechos Recaudados',
             width: this.HeaderNumericWidth,
             filter: false,
-            columnGroupShow: 'open',
+            columnGroupShow: 'Closed', // Se muestra por defecto.
             aggFunc: 'sum',
             cellRenderer: CellRendererOCM
-            ,
           },
           {
-            headerName: 'Facturas, consumen disp., Pend. Contabilizar',
+            headerName: '    Devoluciones de,ingresos,',
             headerComponentFramework: HeaderComponent,
-            field: 'Facturas consumen disp Pend Contabilizar',
+            field: 'Devoluciones de ingreso',
             width: this.HeaderNumericWidth,
             filter: false,
-            columnGroupShow: 'open',
+            columnGroupShow: 'Closed', // Se muestra por defecto.
             aggFunc: 'sum',
             cellRenderer: CellRendererOCM
-            ,
           },
           {
-            headerName: 'Fase,definitiva,',
+            headerName: '    Recaudación,líquida,',
             headerComponentFramework: HeaderComponent,
-            field: 'Gastado en Fase Definitiva',
+            field: 'Recaudación Líquida',
             width: this.HeaderNumericWidth,
             filter: false,
-            columnGroupShow: 'open',
+            columnGroupShow: 'Closed', // Se muestra por defecto.
             aggFunc: 'sum',
             cellRenderer: CellRendererOCM
-            ,
           },
           {
-            headerName: 'Pendiente,Aplicar,a Presupuesto',
+            headerName: '    Derechos,pendientes,de cobro',
             headerComponentFramework: HeaderComponent,
-            field: 'Gasto Pendiente Aplicar a Presupuesto',
+            field: 'Derechos Pendientes de Cobro',
             width: this.HeaderNumericWidth,
             filter: false,
-            columnGroupShow: 'open',
+            columnGroupShow: 'Closed', // Se muestra por defecto.
             aggFunc: 'sum',
             cellRenderer: CellRendererOCM
-            ,
           },
           {
-            headerName: 'Total,gastado,',
+            headerName: '    Estado,de ejecución,',
             headerComponentFramework: HeaderComponent,
-            field: 'Total gastado',
+            field: 'Estado de Ejecución',
             width: this.HeaderNumericWidth,
             filter: false,
-            columnGroupShow: 'open',
+            columnGroupShow: 'Closed', // Se muestra por defecto.
             aggFunc: 'sum',
             cellRenderer: CellRendererOCM
-            ,
           },
-        ]
-      },
-
-      {headerName: 'Pagos',
-        headerGroupComponentFramework: HeaderGroupComponent,
-        children: [
-          {
-            headerName: 'Ordenados,,',
-            headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Pagos Ordenados',
-            width: this.HeaderNumericWidth,
-            filter: false,
-            aggFunc: 'sum',
-            cellRenderer: CellRendererOCM
-            ,
-          },
-          {
-            headerName: 'Realizados,,',
-            headerComponentFramework: HeaderComponent,
-            field: 'Pagos Realizados',
-            width: this.HeaderNumericWidth,
-            filter: false,
-            columnGroupShow: 'open',
-            aggFunc: 'sum',
-            cellRenderer: CellRendererOCM
-            ,
-          },
-        ]
-      },
-
-      {headerName: 'Saldos créditos',
-        headerGroupComponentFramework: HeaderGroupComponent,
-        children: [
-          {
-            headerName: 'Disponibles,,',
-            headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Créditos disponibles',
-            width: this.HeaderNumericWidth + 30, // + espacio para la fecha de despliegue.
-            filter: false,
-            aggFunc: 'sum',
-            cellRenderer: CellRendererOCM
-            ,
-          },
-          {
-            headerName: 'Acuerdo no,disponibilidad,',
-            headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Acuerdo Créditos para No Disponibilidad',
-            width: this.HeaderNumericWidth,
-            filter: false,
-            columnGroupShow: 'open',
-            aggFunc: 'sum',
-            cellRenderer: CellRendererOCM
-            ,
-          },
-          {
-            headerName: 'Retenidos,transferencias,',
-            headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Créditos Retenidos para Trans',
-            width: this.HeaderNumericWidth,
-            filter: false,
-            columnGroupShow: 'open',
-            aggFunc: 'sum',
-            cellRenderer: CellRendererOCM
-            ,
-          },
-          {
-            headerName: 'Retenidos,pendientes,de utilización',
-            headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Créditos Retenidos pdtes de utilización',
-            width: this.HeaderNumericWidth,
-            filter: false,
-            columnGroupShow: 'open',
-            aggFunc: 'sum',
-            cellRenderer: CellRendererOCM
-            ,
-          },
-          {
-            headerName: 'Disponible,real,',
-            headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Crédito Disponible Real',
-            width: this.HeaderNumericWidth,
-            filter: false,
-            columnGroupShow: 'open',
-            aggFunc: 'sum',
-            cellRenderer: CellRendererOCM
-            ,
-          },
-          {
-            headerName: 'Disponibles,a nivel,vinculación',
-            headerComponentFramework: HeaderComponent,
-            field: 'Saldo de Créditos disp a nivel de Vinculación',
-            width: this.HeaderNumericWidth,
-            filter: false,
-            columnGroupShow: 'open',
-            aggFunc: 'sum',
-            cellRenderer: CellRendererOCM
-            ,
-          },
-        ]
-      }
-    ];
+];
 
     this.defaultColDef = {
       sortable: true,
@@ -408,11 +287,8 @@ export class AppComponent implements OnInit {
 
   onGridReady(params) {
     this.gridApi = params.api;
-    // console.log( this.gridApi );
     this.gridColumnApi = params.columnApi;
-    // this.rowData = this.http.get('https://mamjerez.fra1.digitaloceanspaces.com/20191016eje.json');
     this.rowData = this.http.get('https://mamjerez.fra1.digitaloceanspaces.com/20191016ejeIng.json');
-
     params.api.setSortModel(this.defaultSortModel);
   }
 
@@ -452,31 +328,3 @@ function CellRendererOCM(params: any) {
 
 
 
-
-// {
-    //   headerName: '',
-    //   field: 'Cod Pro',
-    //   width: 57,
-    //   cellStyle: cellStyleRight,
-    //   hide: true
-    // },
-
- //  TODO: NO parece hacer nada.
-  // autoGroupColumnDef = {
-  //   headerName: 'Programa',
-  //   field: 'Programa',
-  //   cellRenderer: 'agGroupCellRenderer',
-  //   cellRendererParams: {
-  //     checkbox: true
-  //   }
-  // };
-
-// function CurrencyCellRenderer(params: any) {
-//   const inrFormat = new Intl.NumberFormat('es-ES', {
-//     style: 'decimal',
-//     currency: 'EUR',
-//     minimumFractionDigits: 0
-//   });
-//   console.log(inrFormat.format(params.value));
-//   return inrFormat.format(params.value);
-// }

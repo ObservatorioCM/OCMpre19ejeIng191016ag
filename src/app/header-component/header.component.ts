@@ -32,6 +32,7 @@ export class HeaderComponent implements IHeaderAngularComp {
 
         // Se recibe un string separado por comas, cada coma se convierte en una linea.
         this.myHeaderNameArray = this.params.displayName.slice(4, this.params.displayName.length - 1).split(',');
+        console.log(this.myHeaderNameArray);
         this.myHeaderNameLinea1 =  this.myHeaderNameArray[0];
         this.myHeaderNameLinea2 =  this.myHeaderNameArray[1];
         this.myHeaderNameLinea3 =  this.myHeaderNameArray[2];
